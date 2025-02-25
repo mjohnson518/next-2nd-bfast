@@ -1,0 +1,12 @@
+.root {
+  border: 0;
+  outline: 0;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.5s ease;
+  padding-left: 1ch;
+
+  &:first-child {
+    padding-left: 0px;
+  }
+}
