@@ -2,6 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { MDXRemote } from 'next-mdx-remote';
+import { serialize } from 'next-mdx-remote/serialize';
 
 import { Post } from '@/lib/types';
 import { formatDate } from '@/lib/utils/date';
@@ -13,9 +14,10 @@ import Divider from '@/components/Divider';
 
 interface PostContentProps {
   post: Post;
+  mdxSource?: any; // Serialized MDX content
 }
 
-export default function PostContent({ post }: PostContentProps) {
+export default function PostContent({ post, mdxSource }: PostContentProps) {
   return (
     <CardDouble title={post.title}>
       <div className="post-header">
@@ -48,8 +50,12 @@ export default function PostContent({ post }: PostContentProps) {
       )}
       
       <div className="post-content">
-        {/* This assumes you're using MDX for content */}
-        <MDXRemote {...post.content} />
+        {mdxSource ? (
+          <MDXRemote {...mdxSource} />
+        ) : (
+          // Fallback when MDX source isn't available
+          <div dangerouslySetInnerHTML={{ __html: post.content }} />
+        )}
       </div>
       
       <Divider type="DOUBLE" />
@@ -68,11 +74,11 @@ export default function PostContent({ post }: PostContentProps) {
       </div>
       
       <div className="post-tags">
-        {post.tags.map(tag => (
+        {post.tags?.map(tag => (
           <Badge key={tag.slug}>
             #{tag.name}
           </Badge>
-        ))}
+        )) || null}
       </div>
     </CardDouble>
   );
